@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Ticket do
 
-  let(:subject) { Ticket.new({}) }
+  let(:subject) { described_class.new({}) }
 
   context 'attributes' do
      it { should respond_to :_id } 
