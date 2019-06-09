@@ -3,7 +3,7 @@ require 'spec_helper'
 class FakeDatabaseEntity
   include ActiveProperties
 
-  has_properties :attr_a, :attr_b, :attr_c, :attr_d
+  has_properties :attr_a, :attr_b, :attr_c, :attr_d, :attr_e
 
 end
 
@@ -50,9 +50,9 @@ describe Table do
 
   describe '.find' do
 
-    let(:entry_1) { FakeDatabaseEntity.new({attr_a: '1', attr_b: 'two', attr_c: 'abc', attr_d: 'same'}) }
-    let(:entry_2) { FakeDatabaseEntity.new({attr_a: 'one', attr_b: 2, attr_c: 'abc', attr_d: 'same'}) }
-    let(:entry_3) { FakeDatabaseEntity.new({attr_a: '1', attr_b: 2, attr_c: 'ABC', attr_d: 'same'}) }
+    let(:entry_1) { FakeDatabaseEntity.new({attr_a: '1', attr_b: 'two', attr_c: 'abc', attr_d: ['x', 'y', 'z'], attr_e: 'same'}) }
+    let(:entry_2) { FakeDatabaseEntity.new({attr_a: 'one', attr_b: 2, attr_c: 'abc', attr_d: ['y', 'z', 'a'], attr_e: 'same'}) }
+    let(:entry_3) { FakeDatabaseEntity.new({attr_a: '1', attr_b: 2, attr_c: 'ABC', attr_d: ['z', 'a', 'b'], attr_e: 'same'}) }
 
     before do
       subject.add_entry(entry_1)
@@ -81,15 +81,40 @@ describe Table do
       expect(results).to include(entry_3)
     end
 
+    context 'arrays' do
+
+      it 'finds in arrays' do
+        results = subject.find('attr_d', 'x')
+        expect(results).to include(entry_1)
+        expect(results).to_not include(entry_2)
+        expect(results).to_not include(entry_3)
+      end
+
+      it 'finds multiple in arrays' do
+        results = subject.find('attr_d', 'y')
+        expect(results).to include(entry_1)
+        expect(results).to include(entry_2)
+        expect(results).to_not include(entry_3)
+      end
+
+      it 'finds all in arrays' do
+        results = subject.find('attr_d', 'z')
+        expect(results).to include(entry_1)
+        expect(results).to include(entry_2)
+        expect(results).to include(entry_3)
+      end
+
+    end
+
     it 'returns all entries' do
-      results = subject.find('attr_d', 'same')
+      results = subject.find('attr_e', 'same')
       expect(results).to include(entry_1)
       expect(results).to include(entry_2)
       expect(results).to include(entry_3)
     end
 
-    it 'returns an empty list if field unknonw' do
-      results = subject.find('attr_e', 'same')
+    it 'returns an empty list if field unknown' do
+      results = subject.find('attr_f', 'same')
       expect(results).to be_empty
     end
   end

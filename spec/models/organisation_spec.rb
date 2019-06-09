@@ -16,4 +16,5 @@ describe Organisation do
     it { should respond_to :tags }
   end
 
+
 end

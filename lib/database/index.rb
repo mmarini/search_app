@@ -13,8 +13,11 @@ class Index
   end
 
   def index_value(value, position)
-    index = get_or_create_index(value)
-    index.add(position)
+    if value.is_a?(Array)
+      value.each { |individual_value| add_to_index(individual_value, position) }
+    else
+      add_to_index(value, position)
+    end
 
     position
   end
@@ -27,6 +30,11 @@ class Index
   end
 
   private
+
+  def add_to_index(value, position)
+    index = get_or_create_index(value)
+    index.add(position)
+  end
 
   def get_or_create_index(value)
     index = @index[value]

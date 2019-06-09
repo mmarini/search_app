@@ -1,14 +1,12 @@
 require 'helpers/validators'
+require 'singleton'
 
 class Database
 
+  include Singleton
   include Validators
 
-  attr_reader :name
-
-  def initialize(name)
-    @name = validate_string_presence(name, 'name')
-
+  def initialize()
     @tables = {}
   end
 
