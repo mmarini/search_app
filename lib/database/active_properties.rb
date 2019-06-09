@@ -7,6 +7,7 @@ module ActiveProperties
   attr_accessor :props, :associated_entities
 
   def has_properties *args
+    args = [primary_key.to_sym] + args
     @props = args
     instance_eval { attr_reader *args }
   end

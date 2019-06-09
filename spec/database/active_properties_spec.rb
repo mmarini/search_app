@@ -53,7 +53,10 @@ describe ActiveProperties do
 
   describe '.indexable_fields' do
     it 'returns the properties as a list of strings' do
-      expect(subject.indexable_fields).to eq ['attr_a', 'attr_b', 'attr_c']
+      expect(subject.indexable_fields).to include('_id')
+      expect(subject.indexable_fields).to include('attr_a')
+      expect(subject.indexable_fields).to include('attr_b')
+      expect(subject.indexable_fields).to include('attr_c')
     end
   end
 
