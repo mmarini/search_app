@@ -23,4 +23,10 @@ describe Ticket do
      it { should respond_to :via }
   end
 
+  context 'associations' do
+     it { should respond_to :submitted_by }
+     it { should respond_to :assigned_to }
+     it { should respond_to :organization }
+  end
+
 end

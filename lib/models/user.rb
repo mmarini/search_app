@@ -1,5 +1,3 @@
-require_relative 'ticket'
-
 class User
 
   include ActiveProperties
@@ -8,7 +6,9 @@ class User
               :timezone, :last_login_at, :email, :phone, :signature, :organization_id, :tags, :suspended,
               :role
   
-  has_many :submitted_tickets, Ticket, :submitter_id
-  has_many :assigned_tickets, Ticket, :assignee_id
+  has_many :submitted_tickets, 'Ticket', :submitter_id
+  has_many :assigned_tickets, 'Ticket', :assignee_id
+
+  belongs_to :organization, 'Organization'
 
 end

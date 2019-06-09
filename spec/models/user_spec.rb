@@ -29,5 +29,6 @@ describe User do
   context 'associations' do
     it { should respond_to :submitted_tickets }
     it { should respond_to :assigned_tickets }
+    it { should respond_to :organization }
   end
 end

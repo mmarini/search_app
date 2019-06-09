@@ -6,38 +6,38 @@ class FakeRecord
   has_properties :attr_a, :attr_b, :attr_c
 end
 
-
-class FakeRecordD
-  include ActiveProperties
-
-  has_properties :_id, :name, :different_id
-
-end
-
-class FakeRecordC
-  include ActiveProperties
-
-  has_properties :_id, :name, :fake_record_a_id, :fake_record_b_id
-
-end
-
-class FakeRecordB
-  include ActiveProperties
-
-  has_properties :_id, :name, :fake_record_a_id
-
-  has_many :fake_record_cs, FakeRecordC
-
-end
-
-class FakeRecordA
+class FakeOrganization
   include ActiveProperties
 
   has_properties :_id, :name
 
-  has_many :fake_record_bs, FakeRecordB
-  has_many :fake_record_cs, FakeRecordC
-  has_many :other_fake_records, FakeRecordD, :different_id
+  has_many :fake_employees, 'FakeEmployee'
+  has_many :fake_underlings, 'FakeUnderling'
+  has_many :other_fake_records, 'FakeHiredGoon', :different_id
+end
+
+class FakeEmployee
+  include ActiveProperties
+
+  has_properties :_id, :name, :fake_organization_id
+
+  has_many :fake_underlings, 'FakeUnderling'
+
+  belongs_to :fake_organization, 'FakeOrganization'
+end
+
+class FakeUnderling
+  include ActiveProperties
+
+  has_properties :_id, :name, :fake_organization_id, :fake_employee_id
+end
+
+class FakeHiredGoon
+  include ActiveProperties
+
+  has_properties :_id, :name, :different_id
+
+  belongs_to :fake_secret_org, 'FakeOrganization', :different_id
 
 end
 
@@ -57,93 +57,115 @@ describe ActiveProperties do
     end
   end
 
-  describe 'has_many fields' do
+  context 'associations' do
 
     before(:all) do
-      @homer = FakeRecordA.new({_id: 1, name: 'Homer'})
-      @mr_burns = FakeRecordA.new({_id: 2, name: 'Mr Burns'})
+      @power_plant = FakeOrganization.new({_id: 1, name: 'Springfield PowerPlant'})
+      @moes_bar = FakeOrganization.new({_id: 2, name: 'Moes Bar'})
 
-      @marge = FakeRecordB.new({_id: 1, name: 'Marge', fake_record_a_id: 1})
-      @bart = FakeRecordB.new({_id: 2, name: 'Bart', fake_record_a_id: 1})
-      @moe = FakeRecordB.new({_id: 3, name: 'Moe', fake_record_a_id: 3})
+      @homer = FakeEmployee.new({_id: 1, name: 'Homer', fake_organization_id: 1})
+      @lenny = FakeEmployee.new({_id: 2, name: 'Lenny', fake_organization_id: 1})
+      @frank_grimes = FakeEmployee.new({_id: 3, name: 'Frank Grimes', fake_organization_id: 3})
 
-      @lisa = FakeRecordC.new({_id: 1, name: 'Lisa', fake_record_a_id: 1, fake_record_b_id: 1})
-      @maggie = FakeRecordC.new({_id: 2, name: 'Maggie', fake_record_a_id: 1, fake_record_b_id: 2})
-      @barney = FakeRecordC.new({_id: 2, name: 'Barney', fake_record_a_id: 3, fake_record_b_id: 3})
+      @smithers = FakeUnderling.new({_id: 1, name: 'Smithers', fake_organization_id: 1, fake_employee_id: 1})
+      @jeeves = FakeUnderling.new({_id: 2, name: 'Jeeves', fake_organization_id: 1, fake_employee_id: 2})
+      @barney = FakeUnderling.new({_id: 3, name: 'Barney', fake_organization_id: 3, fake_employee_id: 4})
 
-      @smithers = FakeRecordD.new({_id: 1, name: 'Smithers', different_id: 2})
+      @shorty = FakeHiredGoon.new({_id: 1, name: 'Shorty', different_id: 2})
 
       @database = Database.instance
-      table = @database.add_table(FakeRecordA.name.to_s)
+      table = @database.add_table(FakeOrganization.name.to_s)
+      table.add_entry(@power_plant)
+      table.add_entry(@moes_bar)
+
+      table = @database.add_table(FakeEmployee.name.to_s)
       table.add_entry(@homer)
-      table.add_entry(@mr_burns)
+      table.add_entry(@lenny)
+      table.add_entry(@frank_grimes)
 
-      table = @database.add_table(FakeRecordB.name.to_s)
-      table.add_entry(@marge)
-      table.add_entry(@bart)
-      table.add_entry(@moe)
-
-      table = @database.add_table(FakeRecordC.name.to_s)
-      table.add_entry(@lisa)
-      table.add_entry(@maggie)
+      table = @database.add_table(FakeUnderling.name.to_s)
+      table.add_entry(@smithers)
+      table.add_entry(@jeeves)
       table.add_entry(@barney)
 
-      table = @database.add_table(FakeRecordD.name.to_s)
-      table.add_entry(@smithers)
+      table = @database.add_table(FakeHiredGoon.name.to_s)
+      table.add_entry(@shorty)
     end
 
-    context 'Homer' do
-      it 'returns associated b records' do
-        result_a = @database.find(FakeRecordA.name.to_s, '_id', 1).first
-        associated_bs = result_a.fake_record_bs
-        expect(associated_bs.count).to eq 2
-        expect(associated_bs).to include(@marge)
-        expect(associated_bs).to include(@bart)
-        expect(associated_bs).to_not include(@moe)
+    describe 'has_many fields' do
+
+      context 'Power Plant' do
+        it 'returns associated employees' do
+          result_a = @database.find(FakeOrganization.name.to_s, '_id', 1).first
+          fake_employees = result_a.fake_employees
+          expect(fake_employees.count).to eq 2
+          expect(fake_employees).to include(@homer)
+          expect(fake_employees).to include(@lenny)
+          expect(fake_employees).to_not include(@frank_grimes)
+        end
+
+        it 'returns associated underlings' do
+          result_a = @database.find(FakeOrganization.name.to_s, '_id', 1).first
+          fake_underlings = result_a.fake_underlings
+          expect(fake_underlings.count).to eq 2
+          expect(fake_underlings).to include(@smithers)
+          expect(fake_underlings).to include(@jeeves)
+          expect(fake_underlings).to_not include(@barney)
+        end
       end
 
-      it 'returns associated c records' do
-        result_a = @database.find(FakeRecordA.name.to_s, '_id', 1).first
-        associated_cs = result_a.fake_record_cs
-        expect(associated_cs.count).to eq 2
-        expect(associated_cs).to include(@lisa)
-        expect(associated_cs).to include(@maggie)
-        expect(associated_cs).to_not include(@barney)
+      context 'Moes Bar' do
+        it 'returns no associated employees' do
+          result_a = @database.find(FakeOrganization.name.to_s, '_id', 2).first
+          fake_employees = result_a.fake_employees
+          expect(fake_employees.count).to eq 0
+        end
+
+        it 'returns associated underlings' do
+          result_a = @database.find(FakeOrganization.name.to_s, '_id', 2).first
+          fake_underlings = result_a.fake_underlings
+          expect(fake_underlings.count).to eq 0
+        end
+
+        it 'returns associated other records' do
+          result_a = @database.find(FakeOrganization.name.to_s, '_id', 2).first
+          associated_other = result_a.other_fake_records
+          expect(associated_other.count).to eq 1
+          expect(associated_other).to include(@shorty)
+        end
       end
+
+      context 'Homer' do
+        it 'returns associated underlings for homer' do
+          result_b = @database.find(FakeEmployee.name.to_s, '_id', 1).first
+          fake_underlings = result_b.fake_underlings
+          expect(fake_underlings.count).to eq 1
+          expect(fake_underlings).to include(@smithers)
+          expect(fake_underlings).to_not include(@jeeves)
+          expect(fake_underlings).to_not include(@barney)
+        end
+      end
+
     end
 
-    context 'Mr Burns' do
-      it 'returns no associated b records' do
-        result_a = @database.find(FakeRecordA.name.to_s, '_id', 2).first
-        associated_bs = result_a.fake_record_bs
-        expect(associated_bs.count).to eq 0
+    describe 'belongs to fields' do
+      it 'finds via a belongs to field' do
+        organization = @database.find(FakeOrganization.name.to_s, '_id', 1).first
+        employee = @database.find(FakeEmployee.name.to_s, '_id', 1).first
+        expect(employee.fake_organization).to eq organization
       end
 
-      it 'returns associated c records' do
-        result_a = @database.find(FakeRecordA.name.to_s, '_id', 2).first
-        associated_cs = result_a.fake_record_cs
-        expect(associated_cs.count).to eq 0
+      it 'returns nil if organization does not exist' do
+        employee = @database.find(FakeEmployee.name.to_s, '_id', 3).first
+        expect(employee.fake_organization).to be_nil
       end
 
-      it 'returns associated other records' do
-        result_a = @database.find(FakeRecordA.name.to_s, '_id', 2).first
-        associated_other = result_a.other_fake_records
-        expect(associated_other.count).to eq 1
-        expect(associated_other).to include(@smithers)
+      it 'finds via an alternate id' do
+        organization = @database.find(FakeOrganization.name.to_s, '_id', 2).first
+        secret_employee = @database.find(FakeHiredGoon.name.to_s, '_id', 1).first
+        expect(secret_employee.fake_secret_org).to eq organization
       end
     end
-
-    context 'Marge' do
-      it 'returns associated c records for marge' do
-        result_b = @database.find(FakeRecordB.name.to_s, '_id', 1).first
-        associated_cs = result_b.fake_record_cs
-        expect(associated_cs.count).to eq 1
-        expect(associated_cs).to include(@lisa)
-        expect(associated_cs).to_not include(@maggie)
-        expect(associated_cs).to_not include(@barney)
-      end
-    end
-
   end
 
 end

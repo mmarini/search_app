@@ -11,10 +11,16 @@ module ActiveProperties
     instance_eval { attr_reader *args }
   end
 
-  def has_many(name, klass, associated_key=nil)
+  def has_many(name, table_name, associated_key=nil)
     define_method(name.to_s) do
-      database = Database.instance
-      database.find(klass.name.to_s, default_associated_key(associated_key), instance_variable_get("@#{primary_key}"))
+      find_by(table_name, default_has_many_key(associated_key), instance_variable_get("@#{primary_key}"))
+    end
+  end
+
+  def belongs_to(name, table_name, associated_key=nil)
+    define_method(name.to_s) do
+      result = find_by(table_name, primary_key, default_belongs_to_value(table_name, associated_key))
+      result.empty? ? nil : result.first
     end
   end
 
@@ -38,9 +44,19 @@ module ActiveProperties
     '_id'
   end
 
-  def default_associated_key(default_key)
+  def default_has_many_key(default_key)
     return default_key.to_s unless default_key.nil?
     underscore(self.class.name) + '_id'
+  end
+
+  def default_belongs_to_value(table_name, default_key)
+    key = default_key.nil? ? underscore(table_name) + '_id' : default_key
+    instance_variable_get("@#{key}")
+  end
+
+  def find_by(table_name, associated_key, id)
+    database = Database.instance
+    database.find(table_name, associated_key, id)
   end
 
 end
