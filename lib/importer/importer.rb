@@ -17,7 +17,7 @@ class Importer
 
       line = line.strip
 
-      next if %w([ ]).include?(line)
+      next if line == '['
 
       obj_string += line
       if line.match('}')

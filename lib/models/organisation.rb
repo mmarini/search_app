@@ -1,8 +1,8 @@
 class Organisation
 
-  include Entity
+  include ActiveProperties
 
-  attr_reader :_id, :url, :external_id, :name, :domain_names, :created_at, :details, :shared_tickets, :tags
+  has_properties :_id, :url, :external_id, :name, :domain_names, :created_at, :details, :shared_tickets, :tags
 
 
 end

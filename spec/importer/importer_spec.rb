@@ -1,9 +1,9 @@
 require 'spec_helper'
 
 class FakeClass
-  include Entity
+  include ActiveProperties
 
-  attr_reader :_id, :created_at, :type, :submitter_id, :tags, :has_incidents
+  has_properties :_id, :created_at, :type, :submitter_id, :tags, :has_incidents
 end
 
 describe Importer do
