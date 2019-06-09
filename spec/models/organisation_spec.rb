@@ -16,5 +16,10 @@ describe Organisation do
     it { should respond_to :tags }
   end
 
+  context 'associations' do
+    it { should respond_to :tickets }
+    it { should respond_to :users }
+  end
+
 
 end
