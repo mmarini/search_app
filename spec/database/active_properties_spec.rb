@@ -6,38 +6,25 @@ class FakeRecord
   has_properties :attr_a, :attr_b, :attr_c
 end
 
-class FakeOrganization
+class TestParent
+
   include ActiveProperties
 
   has_properties :_id, :name
 
-  has_many :fake_employees, 'FakeEmployee'
-  has_many :fake_underlings, 'FakeUnderling'
-  has_many :other_fake_records, 'FakeHiredGoon', :different_id
+  has_many :children, 'TestChild'
+  has_many :secret_children, 'TestChild', :secret_parent_id
+
 end
 
-class FakeEmployee
+class TestChild
+
   include ActiveProperties
 
-  has_properties :_id, :name, :fake_organization_id
+  has_properties :_id, :name, :test_parent_id, :secret_parent_id
 
-  has_many :fake_underlings, 'FakeUnderling'
-
-  belongs_to :fake_organization, 'FakeOrganization'
-end
-
-class FakeUnderling
-  include ActiveProperties
-
-  has_properties :_id, :name, :fake_organization_id, :fake_employee_id
-end
-
-class FakeHiredGoon
-  include ActiveProperties
-
-  has_properties :_id, :name, :different_id
-
-  belongs_to :fake_secret_org, 'FakeOrganization', :different_id
+  belongs_to :parent, 'TestParent'
+  belongs_to :unknown_parent, 'TestParent', :secret_parent_id
 
 end
 
@@ -63,112 +50,76 @@ describe ActiveProperties do
   context 'associations' do
 
     before(:all) do
-      @power_plant = FakeOrganization.new({_id: 1, name: 'Springfield PowerPlant'})
-      @moes_bar = FakeOrganization.new({_id: 2, name: 'Moes Bar'})
+      @parent_1 = TestParent.new({_id: 1, name: 'Test Parent 1'})
+      @parent_2 = TestParent.new({_id: 2, name: 'Test Parent 2'})
 
-      @homer = FakeEmployee.new({_id: 1, name: 'Homer', fake_organization_id: 1})
-      @lenny = FakeEmployee.new({_id: 2, name: 'Lenny', fake_organization_id: 1})
-      @frank_grimes = FakeEmployee.new({_id: 3, name: 'Frank Grimes', fake_organization_id: 3})
+      @child_1 = TestChild.new({_id: 1, name: 'Bart', test_parent_id: 1})
+      @child_2 = TestChild.new({_id: 2, name: 'Lisa', test_parent_id: 1})
+      @child_3 = TestChild.new({_id: 3, name: 'Maggie', test_parent_id: 1})
 
-      @smithers = FakeUnderling.new({_id: 1, name: 'Smithers', fake_organization_id: 1, fake_employee_id: 1})
-      @jeeves = FakeUnderling.new({_id: 2, name: 'Jeeves', fake_organization_id: 1, fake_employee_id: 2})
-      @barney = FakeUnderling.new({_id: 3, name: 'Barney', fake_organization_id: 3, fake_employee_id: 4})
+      @orphan_1 = TestChild.new({_id: 4, name: 'Timmy', test_parent_id: 100})
 
-      @shorty = FakeHiredGoon.new({_id: 1, name: 'Shorty', different_id: 2})
+      @secret_child_1 = TestChild.new({_id: 5, name: 'Lenny', secret_parent_id: 1})
+      @secret_child_2 = TestChild.new({_id: 6, name: 'Carl', secret_parent_id: 1})
 
       @database = Database.instance
-      table = @database.add_table(FakeOrganization.name.to_s)
-      table.add_entry(@power_plant)
-      table.add_entry(@moes_bar)
+      table = @database.add_table(TestParent.name.to_s)
+      table.add_entry(@parent_1)
+      table.add_entry(@parent_2)
 
-      table = @database.add_table(FakeEmployee.name.to_s)
-      table.add_entry(@homer)
-      table.add_entry(@lenny)
-      table.add_entry(@frank_grimes)
-
-      table = @database.add_table(FakeUnderling.name.to_s)
-      table.add_entry(@smithers)
-      table.add_entry(@jeeves)
-      table.add_entry(@barney)
-
-      table = @database.add_table(FakeHiredGoon.name.to_s)
-      table.add_entry(@shorty)
+      table = @database.add_table(TestChild.name.to_s)
+      table.add_entry(@child_1)
+      table.add_entry(@child_2)
+      table.add_entry(@child_3)
+      table.add_entry(@orphan_1)
+      table.add_entry(@secret_child_1)
+      table.add_entry(@secret_child_2)
     end
 
-    describe 'has_many fields' do
 
-      context 'Power Plant' do
-        it 'returns associated employees' do
-          result_a = @database.find(FakeOrganization.name.to_s, '_id', 1).first
-          fake_employees = result_a.fake_employees
-          expect(fake_employees.count).to eq 2
-          expect(fake_employees).to include(@homer)
-          expect(fake_employees).to include(@lenny)
-          expect(fake_employees).to_not include(@frank_grimes)
-        end
-
-        it 'returns associated underlings' do
-          result_a = @database.find(FakeOrganization.name.to_s, '_id', 1).first
-          fake_underlings = result_a.fake_underlings
-          expect(fake_underlings.count).to eq 2
-          expect(fake_underlings).to include(@smithers)
-          expect(fake_underlings).to include(@jeeves)
-          expect(fake_underlings).to_not include(@barney)
-        end
+    describe 'has many' do
+      it 'returns children' do
+        parent = @database.find(TestParent.name.to_s, '_id', 1).first
+        children = parent.children
+        expect(children.count).to eq 3
+        expect(children).to include(@child_1)
+        expect(children).to include(@child_2)
+        expect(children).to include(@child_3)
+        expect(children).to_not include(@orphan_1)
       end
 
-      context 'Moes Bar' do
-        it 'returns no associated employees' do
-          result_a = @database.find(FakeOrganization.name.to_s, '_id', 2).first
-          fake_employees = result_a.fake_employees
-          expect(fake_employees.count).to eq 0
-        end
-
-        it 'returns associated underlings' do
-          result_a = @database.find(FakeOrganization.name.to_s, '_id', 2).first
-          fake_underlings = result_a.fake_underlings
-          expect(fake_underlings.count).to eq 0
-        end
-
-        it 'returns associated other records' do
-          result_a = @database.find(FakeOrganization.name.to_s, '_id', 2).first
-          associated_other = result_a.other_fake_records
-          expect(associated_other.count).to eq 1
-          expect(associated_other).to include(@shorty)
-        end
+      it 'returns no children' do
+        parent = @database.find(TestParent.name.to_s, '_id', 2).first
+        children = parent.children
+        expect(children.count).to eq 0
+        expect(children).to be_empty
       end
 
-      context 'Homer' do
-        it 'returns associated underlings for homer' do
-          result_b = @database.find(FakeEmployee.name.to_s, '_id', 1).first
-          fake_underlings = result_b.fake_underlings
-          expect(fake_underlings.count).to eq 1
-          expect(fake_underlings).to include(@smithers)
-          expect(fake_underlings).to_not include(@jeeves)
-          expect(fake_underlings).to_not include(@barney)
-        end
+      it 'retuns child via specific id' do
+        parent = @database.find(TestParent.name.to_s, '_id', 1).first
+        children = parent.secret_children
+        expect(children.count).to eq 2
+        expect(children).to include(@secret_child_1)
+        expect(children).to include(@secret_child_2)
       end
-
     end
 
-    describe 'belongs to fields' do
-      it 'finds via a belongs to field' do
-        organization = @database.find(FakeOrganization.name.to_s, '_id', 1).first
-        employee = @database.find(FakeEmployee.name.to_s, '_id', 1).first
-        expect(employee.fake_organization).to eq organization
+    describe 'belongs to' do
+      it 'returns parent' do
+        child = @database.find(TestChild.name.to_s, '_id', 1).first
+        expect(child.parent).to eq @parent_1
       end
 
-      it 'returns nil if organization does not exist' do
-        employee = @database.find(FakeEmployee.name.to_s, '_id', 3).first
-        expect(employee.fake_organization).to be_nil
+      it 'does not return a parent' do
+        child = @database.find(TestChild.name.to_s, '_id', 4).first
+        expect(child.parent).to be_nil
       end
 
-      it 'finds via an alternate id' do
-        organization = @database.find(FakeOrganization.name.to_s, '_id', 2).first
-        secret_employee = @database.find(FakeHiredGoon.name.to_s, '_id', 1).first
-        expect(secret_employee.fake_secret_org).to eq organization
+      it 'returns parent via specific id' do
+        child = @database.find(TestChild.name.to_s, '_id', 5).first
+        expect(child.unknown_parent).to eq @parent_1
       end
+
     end
   end
-
 end
