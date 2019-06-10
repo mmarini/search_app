@@ -66,6 +66,51 @@ describe Database do
       expect(results).to_not include(@entry_3)
     end
 
+  end
+
+  describe '.can_search_on?' do
+
+    before(:all) do
+      @database = described_class.instance
+
+      @entry_1 = FakeDatabaseEntity.new({attr_a: '1', attr_b: 'two', attr_c: 'abc', attr_d: 'same'})
+
+      table = @database.add_table('CanSearchOnTest')
+      table.add_entry(@entry_1)
+    end
+
+    it 'returns true if I can search on a specific field' do
+      expect(@database.can_search_on?('CanSearchOnTest', 'attr_c')).to be_truthy
+    end
+
+    it 'returns false if the table name does not exist' do
+      expect(@database.can_search_on?('AnInvalidTableName', 'attr_c')).to be_falsey
+    end
+
+    it 'returns false if the specific field does not exist' do
+      expect(@database.can_search_on?('CanSearchOnTest', 'an_invalid_field')).to be_falsey
+    end
+
+  end
+
+  describe '.search_fields_for' do
+
+    before(:all) do
+      @database = described_class.instance
+
+      @entry_1 = FakeDatabaseEntity.new({attr_a: '1', attr_b: 'two', attr_c: 'abc', attr_d: 'same'})
+
+      table = @database.add_table('SearchFieldsTest')
+      table.add_entry(@entry_1)
+    end
+
+    it 'returns a list of fields to search on' do
+      search_fields = @database.search_fields_for('SearchFieldsTest')
+      expect(search_fields).to include('attr_a')
+      expect(search_fields).to include('attr_b')
+      expect(search_fields).to include('attr_c')
+      expect(search_fields).to_not include('attr_d')
+    end
 
   end
 

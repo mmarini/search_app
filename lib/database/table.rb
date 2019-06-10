@@ -1,4 +1,4 @@
-require 'helpers/validators'
+require_relative '../helpers/validators'
 
 class Table
 
@@ -29,6 +29,14 @@ class Table
     return [] if index.nil?
     positions = index.find_value(value)
     positions.map { |pos| @entries[pos] }
+  end
+
+  def can_search_on?(field)
+    @indexes.has_key?(field)
+  end
+
+  def indexed_fields
+    @indexes.keys
   end
 
   private

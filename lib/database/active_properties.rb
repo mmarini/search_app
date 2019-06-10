@@ -1,4 +1,4 @@
-require 'helpers/string_helper'
+require_relative '../helpers/string_helper'
 
 module ActiveProperties
 

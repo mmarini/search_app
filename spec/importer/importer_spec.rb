@@ -27,6 +27,10 @@ describe Importer do
                                ])
       expect(data.has_incidents).to be false
     end
+
+    it 'yields to the block if passed in' do
+      expect { |b| described_class.import(File.dirname(__FILE__) + '/../data/test_data.json', FakeClass, &b) }.to yield_control
+    end
   end
 
 end

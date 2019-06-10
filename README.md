@@ -43,10 +43,10 @@ The models were originally looking like this:
     end
 
 So there were patterns emerging here:
-- Every object type had a '_id' attribute as it's primary lookup
-- The the properties specified in attr_reader and the indexable_fields were the same
+- Every object type had an '_id' attribute as it's primary lookup
+- The properties specified in attr_reader and the indexable_fields were the same
 - Each model was going to have their attributes initialized by a hash as parsed by the importer
-- The methods to get associated objects were going to find those objects in a consistant way
+- The methods to get associated objects were going to find those objects in a consistent way
 
 After reviewing, I decided to refactor these off into active_properties module which:
 - specifies a has_properties method which:
@@ -58,8 +58,9 @@ After reviewing, I decided to refactor these off into active_properties module w
 - specifies a belongs_to method which:
   - performs the database lookup to return associated parent objects in a parent-child relationship
   
-Moving these into a separate module had the benefit of moving any database implementation items out of the models
+Moving these into a separate module also had the benefit of moving any database implementation items out of the models
 themselves, so I could then move that module to the database directory
 
 ## Importer
-The importer takes a file name and parses the contents to initialize instances of the models
+The importer takes a file name and parses the contents to initialize instances of the models. It also takes in a block
+so we can perform actions on the objects as they are created

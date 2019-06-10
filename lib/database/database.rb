@@ -1,4 +1,4 @@
-require 'helpers/validators'
+require_relative '../helpers/validators'
 require 'singleton'
 
 class Database
@@ -23,6 +23,19 @@ class Database
     table = @tables[table_name]
     return [] if table.nil?
     table.find(field, value)
+  end
+
+  def can_search_on?(table_name, field)
+    table = @tables[table_name]
+    return false if table.nil?
+    table.can_search_on?(field)
+  end
+
+  def search_fields_for(table_name)
+    table = @tables[table_name]
+    return [] if table.nil?
+
+    table.indexed_fields
   end
 
 end

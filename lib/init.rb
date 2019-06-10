@@ -1,3 +1,4 @@
+require_relative 'app/search_app'
 require_relative 'database/active_properties'
 require_relative 'database/database'
 require_relative 'database/table'

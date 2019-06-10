@@ -8,7 +8,7 @@ class Importer
   # Params:
   # +filename+:: full path to the data file
   # +klass+:: class of the objects to return
-  def self.import(filename, klass)
+  def self.import(filename, klass, &block)
 
     objects = []
     obj_string = ''
@@ -22,6 +22,10 @@ class Importer
       obj_string += line
       if line.match('}')
         obj_string.sub!('},', '}')
+
+        obj = klass.new(JSON.parse(obj_string))
+
+        yield obj unless block.nil?
 
         objects << klass.new(JSON.parse(obj_string))
         obj_string = ''

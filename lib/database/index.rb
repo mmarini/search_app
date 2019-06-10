@@ -1,4 +1,5 @@
-require 'helpers/validators'
+require_relative '../helpers/validators'
+require 'set'
 
 class Index
 
