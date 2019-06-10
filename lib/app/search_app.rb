@@ -12,7 +12,11 @@ class SearchApp
     @cli = HighLine.new
 
     pre_start
-    main_menu
+
+    loop do
+      @cli.say "\n"
+      main_menu
+    end
   end
 
   private
@@ -44,7 +48,7 @@ class SearchApp
     @cli.choose do |menu|
       menu.prompt = "Please select an option"
       menu.choice('Search Zendesk') { search_entity_prompt }
-      menu.choice('Quit') { @cli.say("exiting") }
+      menu.choice('Quit') { exit }
     end
   end
 
