@@ -181,5 +181,5 @@ so we can perform actions on the objects as they are created
 A view will take in the object and format it for display. The format is a an array of arrays that can be taken in by the
 tty-table gem
 
-## Helpers
+### Helpers
 Code that helps with items like validation, string formatting and input formatting goes here
