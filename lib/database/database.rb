@@ -46,6 +46,10 @@ class Database
     @tables.count
   end
 
+  def all_indexed_fields
+    @tables.map { |_key, value| [value.name,  value.indexed_fields] }
+  end
+
   private
 
   def initialize_tables

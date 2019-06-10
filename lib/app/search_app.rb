@@ -43,11 +43,12 @@ class SearchApp
   end
 
   def self.main_menu
-    @cli.say "Welcome to the search app"
+    @cli.say "Welcome to the Zendesk search app"
 
     @cli.choose do |menu|
       menu.prompt = "Please select an option"
       menu.choice('Search Zendesk') { search_entity_prompt }
+      menu.choice('List Searchable Fields') { list_searchable_fields }
       menu.choice('Quit') { exit }
     end
   end
@@ -94,6 +95,15 @@ class SearchApp
       end
 
       @cli.say "Returned #{results.count} entries of type #{table_name}"
+    end
+  end
+
+  def self.list_searchable_fields
+    indexed_fields = Database.instance.all_indexed_fields
+    indexed_fields.each do |table_name, fields|
+      @cli.say "Search #{table_name} with:"
+      fields.each { |field| @cli.say field }
+      @cli.say "\n--------------------------"
     end
   end
 

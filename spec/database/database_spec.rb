@@ -4,8 +4,14 @@ class FakeDatabaseEntity
   include ActiveProperties
 
   has_properties :attr_a, :attr_b, :attr_c
-
 end
+
+class AlternateDatabaseEntity
+  include ActiveProperties
+
+  has_properties :attr_1, :attr_2, :attr_3
+end
+
 
 describe Database do
 
@@ -138,5 +144,25 @@ describe Database do
     end
   end
 
+  describe '.all_indexed_fields' do
+    it 'returns an array of tables and indexed fields' do
+      database = described_class.instance
+      database.clear!
 
+      entry_1 = FakeDatabaseEntity.new({attr_a: '1', attr_b: 'two', attr_c: 'abc'})
+      entry_2 = AlternateDatabaseEntity.new({attr_1: '1', attr_2: 'two', attr_3: 'abc'})
+
+      table = database.add_table('FakeDatabaseEntity')
+      table.add_entry(entry_1)
+
+      table = database.add_table('AlternateDatabaseEntity')
+      table.add_entry(entry_2)
+
+      results = database.all_indexed_fields
+
+      expect(results.count).to eq 2
+      expect(results).to include(['FakeDatabaseEntity', ['_id', 'attr_a', 'attr_b', 'attr_c']])
+      expect(results).to include(['AlternateDatabaseEntity', ['_id', 'attr_1', 'attr_2', 'attr_3']])
+    end
+  end
 end
