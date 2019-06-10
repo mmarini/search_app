@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Organization do
+describe Models::Organization do
 
   let(:subject) { described_class.new({}) }
 

@@ -114,5 +114,29 @@ describe Database do
 
   end
 
+  describe '.clear!' do
+    it 'removes tables from the database' do
+      database = described_class.instance
+      database.clear!
+      expect(database.number_of_tables).to eq 0
+      database.add_table('TemporaryTable')
+      expect(database.number_of_tables).to eq 1
+      database.clear!
+      expect(database.number_of_tables).to eq 0
+    end
+  end
+
+  describe '.number_of_tables' do
+    it 'returns the number of tables' do
+      database = described_class.instance
+      database.clear!
+      expect(database.number_of_tables).to eq 0
+      3.times do |num|
+        database.add_table("TemporaryTable#{num}")
+      end
+      expect(database.number_of_tables).to eq 3
+    end
+  end
+
 
 end

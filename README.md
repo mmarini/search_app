@@ -4,12 +4,14 @@
 
 ## Database
 In order to search, models are added to an internal database. There is only 1 database instance (it's a singleton), 
-which contains many tables. There is 1 table per object type (Organisation, User, Ticket). The objects are stored in
-an array on the table.
+which contains many tables. Each table has to have a unique name. There is 1 table per object type (Organisation, User, 
+Ticket). The objects are stored in an array on the table.
 
 Each table also has many indexes. The index is a hash of values, which returns a set of positions of where the objects
 are stored within the table. Currently, every field on a model is indexed, but it doesn't have to be that way.
 The indexable_fields method on each model could be overridden if only a select number of fields are to be indexed.
+
+The index will index the value as is. If the value is an Array, it will index each item in the array.
 
 ## Models
 Each of the three models (Organisation, Ticket, User) maps to each of the test files that was provided for the 
@@ -64,3 +66,10 @@ themselves, so I could then move that module to the database directory
 ## Importer
 The importer takes a file name and parses the contents to initialize instances of the models. It also takes in a block
 so we can perform actions on the objects as they are created
+
+## Views
+A view will take in the object and format it for display. The format is a an array of arrays that can be taken in by the
+tty-table gem
+
+## Helpers
+Code that helps with items like validation, string formatting and input formatting goes here

@@ -33,6 +33,17 @@ describe Index do
       positions = subject.find_value('1')
       expect(positions).to include(1)
     end
+
+    it 'indexes an array value' do
+      entry = FakeIndexEntity.new({attr_a: ['a', 'b', 'c'], attr_b: 2, attr_c: 'abc'})
+      position = subject.index_value(entry.attr_a, 1)
+      expect(position).to eq 1
+      ['a', 'b', 'c'].each do |value|
+        positions = subject.find_value(value)
+        expect(positions).to include(1)
+      end
+    end
+
   end
 
 end

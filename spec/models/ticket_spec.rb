@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Ticket do
+describe Models::Ticket do
 
   let(:subject) { described_class.new({}) }
 

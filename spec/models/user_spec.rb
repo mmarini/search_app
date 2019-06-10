@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe User do
+describe Models::User do
 
   let(:subject) { described_class.new({}) }
 

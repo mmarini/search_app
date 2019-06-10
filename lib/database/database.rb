@@ -7,7 +7,7 @@ class Database
   include Validators
 
   def initialize()
-    @tables = {}
+    initialize_tables
   end
 
   def add_table(name)
@@ -36,6 +36,20 @@ class Database
     return [] if table.nil?
 
     table.indexed_fields
+  end
+
+  def clear!
+    initialize_tables
+  end
+
+  def number_of_tables
+    @tables.count
+  end
+
+  private
+
+  def initialize_tables
+    @tables = {}
   end
 
 end
