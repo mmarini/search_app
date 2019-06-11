@@ -2,7 +2,9 @@
 
 ## How to run
 
-Pre-requisites: Please run a `bundle install` from the `search_app` directory to install any required libraries
+Pre-requisites: 
+- Solution coded against ruby 2.6.3
+- Please run a `bundle install` from the `search_app` directory to install any required libraries
 
 From the bin directory, run `./search.rb`
 
@@ -183,3 +185,7 @@ tty-table gem
 
 ### Helpers
 Code that helps with items like validation, string formatting and input formatting goes here
+
+### App
+The app directory contains the code for the UI menus and prompting. Each action (search, list fields) has their own 
+action class

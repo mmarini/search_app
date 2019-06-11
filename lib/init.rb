@@ -1,3 +1,5 @@
+require_relative 'app/action/list_fields'
+require_relative 'app/action/search_database'
 require_relative 'app/search_app'
 require_relative 'database/active_properties'
 require_relative 'database/database'
