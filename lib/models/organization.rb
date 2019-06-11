@@ -1,7 +1,7 @@
 module Models
   class Organization
 
-    include ActiveProperties
+    include Database::ActiveProperties
 
     has_properties :url, :external_id, :name, :domain_names, :created_at, :details, :shared_tickets, :tags
 

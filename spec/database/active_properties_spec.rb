@@ -1,14 +1,14 @@
 require 'spec_helper'
 
 class FakeRecord
-  include ActiveProperties
+  include Database::ActiveProperties
 
   has_properties :attr_a, :attr_b, :attr_c
 end
 
 class TestParent
 
-  include ActiveProperties
+  include Database::ActiveProperties
 
   has_properties :_id, :name
 
@@ -19,7 +19,7 @@ end
 
 class TestChild
 
-  include ActiveProperties
+  include Database::ActiveProperties
 
   has_properties :_id, :name, :test_parent_id, :secret_parent_id
 
@@ -28,7 +28,7 @@ class TestChild
 
 end
 
-describe ActiveProperties do
+describe Database::ActiveProperties do
 
   let(:subject) { FakeRecord.new({attr_a: 1, attr_b: 'two', attr_c: 'abc'}) }
 
@@ -62,7 +62,7 @@ describe ActiveProperties do
       @secret_child_1 = TestChild.new({_id: 5, name: 'Lenny', secret_parent_id: 1})
       @secret_child_2 = TestChild.new({_id: 6, name: 'Carl', secret_parent_id: 1})
 
-      @database = Database.instance
+      @database = Database::Database.instance
       table = @database.add_table(TestParent.name.to_s)
       table.add_entry(@parent_1)
       table.add_entry(@parent_2)

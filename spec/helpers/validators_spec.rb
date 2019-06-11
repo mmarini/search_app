@@ -1,10 +1,10 @@
 require 'spec_helper'
 
 class TestValidator
-  include Validators
+  include Helper::Validators
 end
 
-describe Validators do
+describe Helper::Validators do
 
   let(:subject) { TestValidator.new }
 

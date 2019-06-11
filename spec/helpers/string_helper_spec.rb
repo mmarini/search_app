@@ -1,10 +1,10 @@
 require 'spec_helper'
 
 class TestStringHelper
-  include StringHelper
+  include Helper::StringHelper
 end
 
-describe StringHelper do
+describe Helper::StringHelper do
 
   let(:subject) { TestStringHelper.new }
 

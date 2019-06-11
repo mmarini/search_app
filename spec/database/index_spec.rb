@@ -1,13 +1,13 @@
 require 'spec_helper'
 
 class FakeIndexEntity
-  include ActiveProperties
+  include Database::ActiveProperties
 
   has_properties :attr_a, :attr_b, :attr_c
 
 end
 
-describe Index do
+describe Database::Index do
 
   let(:subject) { described_class.new("test index") }
 

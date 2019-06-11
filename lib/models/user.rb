@@ -1,7 +1,7 @@
 module Models
   class User
 
-    include ActiveProperties
+    include Database::ActiveProperties
 
     has_properties :url, :external_id, :name, :alias, :created_at, :active, :verified, :shared, :locale,
                 :timezone, :last_login_at, :email, :phone, :signature, :organization_id, :tags, :suspended,

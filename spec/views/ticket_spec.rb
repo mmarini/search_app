@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Views::Ticket do
 
   before(:each) do
-    Database.instance.clear!
+    Database::Database.instance.clear!
   end
 
   let(:subject) { described_class }
@@ -60,13 +60,13 @@ describe Views::Ticket do
 
   it 'renders a ticket' do
 
-    table = Database.instance.add_table('Organization')
+    table = Database::Database.instance.add_table('Organization')
     table.add_entry(organization)
 
-    table = Database.instance.add_table('Ticket')
+    table = Database::Database.instance.add_table('Ticket')
     table.add_entry(ticket)
 
-    table = Database.instance.add_table('User')
+    table = Database::Database.instance.add_table('User')
     table.add_entry(user_1)
     table.add_entry(user_2)
 

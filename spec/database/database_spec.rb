@@ -1,19 +1,19 @@
 require 'spec_helper'
 
 class FakeDatabaseEntity
-  include ActiveProperties
+  include Database::ActiveProperties
 
   has_properties :attr_a, :attr_b, :attr_c
 end
 
 class AlternateDatabaseEntity
-  include ActiveProperties
+  include Database::ActiveProperties
 
   has_properties :attr_1, :attr_2, :attr_3
 end
 
 
-describe Database do
+describe Database::Database do
 
   let(:subject) { described_class.instance }
 
@@ -40,7 +40,7 @@ describe Database do
 
     it 'creates a new table' do
       table = subject.add_table('new_test_table')
-      expect(table).to be_kind_of(Table)
+      expect(table).to be_kind_of(Database::Table)
       expect(table.name).to eq('new_test_table')
     end
   end

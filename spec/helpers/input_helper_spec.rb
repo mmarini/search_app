@@ -1,8 +1,13 @@
 require 'spec_helper'
 
-describe InputHelper do
 
-  let(:subject) { described_class }
+class InputHelperClass
+  include Helper::InputHelper
+end
+
+describe Helper::InputHelper do
+
+  let(:subject) { InputHelperClass.new }
 
   describe '.format_for_searching' do
     it 'returns an integer' do

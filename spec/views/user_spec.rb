@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Views::User do
 
   before(:each) do
-    Database.instance.clear!
+    Database::Database.instance.clear!
   end
 
   let(:subject) { described_class }
@@ -66,14 +66,14 @@ describe Views::User do
   ) }
 
   it 'renders a ticket' do
-    table = Database.instance.add_table('Organization')
+    table = Database::Database.instance.add_table('Organization')
     table.add_entry(organization)
 
-    table = Database.instance.add_table('Ticket')
+    table = Database::Database.instance.add_table('Ticket')
     table.add_entry(ticket_1)
     table.add_entry(ticket_2)
 
-    table = Database.instance.add_table('User')
+    table = Database::Database.instance.add_table('User')
     table.add_entry(user)
 
     results = subject.format(user)

@@ -1,13 +1,13 @@
 require 'spec_helper'
 
 class FakeTableEntity
-  include ActiveProperties
+  include Database::ActiveProperties
 
   has_properties :attr_a, :attr_b, :attr_c, :attr_d, :attr_e
 
 end
 
-describe Table do
+describe Database::Table do
 
   let(:subject) { described_class.new("test table") }
 

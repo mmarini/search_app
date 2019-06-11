@@ -2,4 +2,5 @@
 
 require_relative '../lib/init'
 
-SearchApp.run
+app = App::SearchApp.new
+app.run

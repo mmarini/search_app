@@ -1,12 +1,12 @@
 require 'spec_helper'
 
 class FakeClass
-  include ActiveProperties
+  include Database::ActiveProperties
 
   has_properties :_id, :created_at, :type, :submitter_id, :tags, :has_incidents
 end
 
-describe Importer do
+describe Importer::JSONImporter do
 
   describe '#import' do
     it 'imports the file into objects of the class passed in' do
