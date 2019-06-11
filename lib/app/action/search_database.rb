@@ -1,3 +1,5 @@
+require 'tty-pager'
+require 'tty-table'
 require_relative '../../helpers/input_helper'
 
 module App
@@ -8,6 +10,7 @@ module App
 
       def initialize(cli)
         @cli = cli
+        @pager = TTY::Pager.new
       end
 
       def run
@@ -50,14 +53,15 @@ module App
         if results.empty?
           @cli.say "No #{table_name} found with #{search_term} of value #{search_value}"
         else
-          results.each do |result|
+          output = results.map do |result|
             view_class = Object.const_get("Views::#{table_name}")
             table = TTY::Table.new header: ['Field Name', 'Value'], rows: view_class.format(result)
-            @cli.say table.render(:basic, multiline: true)
-            @cli.say "\n--------------------------"
+            table.render(:basic, multiline: true)
           end
 
-          @cli.say "Returned #{results.count} entries of type #{table_name}"
+          @pager.page(output.join("\n-------------------------------------------------------\n"))
+
+          @cli.say "\nReturned #{results.count} entries of type #{table_name}"
         end
       end
     end

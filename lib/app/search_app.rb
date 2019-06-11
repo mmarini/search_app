@@ -1,5 +1,4 @@
 require 'highline'
-require 'tty-table'
 
 module App
   class SearchApp

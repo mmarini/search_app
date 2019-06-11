@@ -112,6 +112,9 @@ Option 2 (List Searchable Fields) will display a list of searchable fields:
     
     --------------------------
 
+## Tests
+Tests were written with RSpec and are located in the `spec` directory . Please run `bundle exec rspec` to execute
+
 ## Design Decisions
 
 ### Database
