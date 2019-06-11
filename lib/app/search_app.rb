@@ -50,8 +50,13 @@ module App
         menu.prompt = 'Please select an option'
         menu.choice('Search Zendesk') { @search_database.run }
         menu.choice('List Searchable Fields') { @list_fields.run }
-        menu.choice('Quit') { exit }
+        menu.choice('Quit') { exit_app }
       end
+    end
+
+    def exit_app
+      @cli.say("Bye")
+      exit
     end
   end
 end

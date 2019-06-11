@@ -6,7 +6,7 @@ Pre-requisites:
 - Solution coded against ruby 2.6.3
 - Please run a `bundle install` from the `search_app` directory to install any required libraries
 
-From the bin directory, run `./search.rb`
+From the search_app directory, run `bundle exec ./bin/search.rb`
 
 You will be presented with a menu that will prompt you for the following:
 

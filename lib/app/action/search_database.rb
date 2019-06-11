@@ -11,6 +11,7 @@ module App
       def initialize(cli)
         @cli = cli
         @pager = TTY::Pager.new
+        @pastel = Pastel.new
       end
 
       def run
@@ -55,13 +56,14 @@ module App
         else
           output = results.map do |result|
             view_class = Object.const_get("Views::#{table_name}")
-            table = TTY::Table.new header: ['Field Name', 'Value'], rows: view_class.format(result)
+            table = TTY::Table.new header: [@pastel.bold('Field Name'), @pastel.bold('Value')],
+                                   rows: view_class.format(result)
             table.render(:basic, multiline: true)
           end
 
-          @pager.page(output.join("\n-------------------------------------------------------\n"))
+          output << @pastel.cyan("Returned #{results.count} entries of type #{table_name}")
 
-          @cli.say "\nReturned #{results.count} entries of type #{table_name}"
+          @pager.page(output.join("\n-------------------------------------------------------\n"))
         end
       end
     end

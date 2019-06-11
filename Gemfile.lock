@@ -54,6 +54,7 @@ PLATFORMS
 
 DEPENDENCIES
   highline
+  pastel
   rspec
   simplecov
   tty-pager
