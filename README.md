@@ -18,37 +18,44 @@ You will be presented with a menu that will prompt you for the following:
 
 Option 1 (Search Zendesk) will prompt you for more information:
 
-    Please select an option
-    1
-    1. User
-    2. Ticket
-    3. Organization
-    What whould you like to search on
-    3
-    Enter search term
-    _id
+    What would you like to search on? (Use arrow keys, press Enter to select, and letter keys to filter)
+    ‣ Organization
+      Ticket
+      User
+    Choose the field to search against (Use arrow keys, press Enter to select, and letter keys to filter)
+    ‣ _id
+      url
+      external_id
+      name
+      domain_names
+      created_at
+    (Move up or down to reveal more choices)
     Enter search value
     117
-    Field Name     Value                                                   
-    _id            117                                                     
+    Field Name     Value
+    _id            117
     url            http://initech.zendesk.com/api/v2/organizations/117.json
-    external_id    bf9b5a96-9b10-45ff-b638-a374a521dead                    
-    name           Comtext                                                 
-    created_at     2016-03-17T08:48:21 -11:00                              
-    details        Artisan                                                 
-    shared_tickets true                                                    
-    tags           Burris                                                  
-                   Ortiz                                                   
-                   Langley                                                 
-                   Wall                                                    
-    users                                                                  
-    tickets        problem - A Problem in United Kingdom                   
-                   incident - A Catastrophe in Cook Islands                
-                   incident - A Catastrophe in New Zealand                 
-                   problem - A Drama in Qatar                              
-                   task - A Drama in Burundi                               
-    --------------------------
+    external_id    bf9b5a96-9b10-45ff-b638-a374a521dead
+    name           Comtext
+    created_at     2016-03-17T08:48:21 -11:00
+    details        Artisan
+    shared_tickets true
+    tags           Burris
+                   Ortiz
+                   Langley
+                   Wall
+    users
+    tickets        problem - A Problem in United Kingdom
+                   incident - A Catastrophe in Cook Islands
+                   incident - A Catastrophe in New Zealand
+                   problem - A Drama in Qatar
+                   task - A Drama in Burundi
+    -------------------------------------------------------
     Returned 1 entries of type Organization
+
+The options for selecting the type (Organization, Ticket, User) uses the arrow keys to select
+The options for selecting the field to search against also uses the arrow keys, but also enables you to filter that list
+by typing
 
 Option 2 (List Searchable Fields) will display a list of searchable fields:
 
@@ -111,6 +118,9 @@ Option 2 (List Searchable Fields) will display a list of searchable fields:
     role
     
     --------------------------
+
+The results for the search and listing the search fields will scroll similar to the `less` command. Use the arrow keys 
+to scroll up and down, a space to scroll down a page, or press `q` to quit the results
 
 ## Tests
 Tests were written with RSpec and are located in the `spec` directory . Please run `bundle exec rspec` to execute

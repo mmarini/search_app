@@ -31,6 +31,16 @@ describe Importer::JSONImporter do
     it 'yields to the block if passed in' do
       expect { |b| described_class.import(File.dirname(__FILE__) + '/../data/test_data.json', FakeClass, &b) }.to yield_control
     end
+
+    it 'raises a invalid file error if the file is malformed' do
+      filename = File.dirname(__FILE__) + '/../data/invalid_test_data.json'
+      expect { described_class.import(filename, FakeClass) }.to raise_error(Errors::InvalidFileError)
+    end
+
+    it 'returns an empty array if file is not found' do
+      filename = File.dirname(__FILE__) + '/../data/random_file_that_does_not_exist.json'
+      expect(described_class.import(filename, FakeClass)).to be_empty
+    end
   end
 
 end

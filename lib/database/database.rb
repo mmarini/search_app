@@ -20,6 +20,10 @@ module Database
       table
     end
 
+    def table_names
+      @tables.keys
+    end
+
     def find(table_name, field, value)
       table = @tables[table_name]
       return [] if table.nil?

@@ -1,4 +1,5 @@
 require 'tty-pager'
+require 'tty-prompt'
 require 'tty-table'
 require_relative '../../helpers/input_helper'
 
@@ -21,21 +22,22 @@ module App
       private
 
       def search_entity_prompt
-        @cli.choose do |menu|
-          menu.prompt = "What whould you like to search on"
-          menu.choice('User') { |search_type| search_term_prompt(search_type) }
-          menu.choice('Ticket') { |search_type| search_term_prompt(search_type) }
-          menu.choice('Organization') { |search_type| search_term_prompt(search_type) }
-        end
+
+        table_names = Database::Database.instance.table_names
+
+        prompt = TTY::Prompt.new
+        search_type = prompt.select('What would you like to search on?', table_names,
+                                    { filter: true })
+
+        search_term_prompt(search_type)
       end
 
       def search_term_prompt(table_name)
-        valid_search_fields = Database::Database.instance.search_fields_for(table_name).join(', ')
+        search_fields = Database::Database.instance.search_fields_for(table_name)
 
-        search_term = @cli.ask("Enter search term") do |search_term|
-          search_term.validate              = ->(term) { Database::Database.instance.can_search_on?(table_name, term) }
-          search_term.responses[:not_valid] = "Search field must be one of #{valid_search_fields}"
-        end
+        prompt = TTY::Prompt.new
+        search_term = prompt.select('Choose the field to search against', search_fields,
+                                    { filter: true })
 
         search_value_prompt(table_name, search_term)
       end
@@ -58,7 +60,7 @@ module App
             view_class = Object.const_get("Views::#{table_name}")
             table = TTY::Table.new header: [@pastel.bold('Field Name'), @pastel.bold('Value')],
                                    rows: view_class.format(result)
-            table.render(:basic, multiline: true)
+            table.render(:basic, multiline: true, resize: true)
           end
 
           output << @pastel.cyan("Returned #{results.count} entries of type #{table_name}")

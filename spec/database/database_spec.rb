@@ -45,6 +45,18 @@ describe Database::Database do
     end
   end
 
+  describe '.table_names' do
+    it 'returns an array of table names' do
+      subject.clear!
+      3.times { |item| subject.add_table("test_table_#{item}") }
+
+      table_names = subject.table_names
+      3.times do |item|
+        expect(table_names).to include("test_table_#{item}")
+      end
+    end
+  end
+
   describe '.find' do
 
     before(:all) do
