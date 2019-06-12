@@ -3,7 +3,7 @@ require 'spec_helper'
 class FakeIndexEntity
   include Database::ActiveProperties
 
-  has_properties :attr_a, :attr_b, :attr_c
+  has_properties :attr_a, :attr_b, :attr_c, :attr_d
 
 end
 
@@ -44,6 +44,22 @@ describe Database::Index do
       end
     end
 
-  end
+    it 'indexes a blank value' do
+      entry = FakeIndexEntity.new({attr_a: ['a', 'b', 'c'], attr_b: 2, attr_c: 'abc', attr_d: ''})
+      position = subject.index_value(entry.attr_d, 1)
+      expect(position).to eq 1
 
+      positions = subject.find_value('')
+      expect(positions).to include(1)
+    end
+
+    it 'indexes a blank value' do
+      entry = FakeIndexEntity.new({attr_a: ['a', 'b', 'c'], attr_b: 2, attr_c: 'abc', attr_d: nil})
+      position = subject.index_value(entry.attr_d, 1)
+      expect(position).to eq 1
+
+      positions = subject.find_value(nil)
+      expect(positions).to include(1)
+    end
+  end
 end
