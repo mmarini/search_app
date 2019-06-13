@@ -25,7 +25,5 @@ describe Helper::InputHelper do
     it 'returns the string' do
       expect( subject.format_for_searching('123truefalse') ).to eql '123truefalse'
     end
-
-
   end
 end

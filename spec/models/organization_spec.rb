@@ -21,5 +21,4 @@ describe Models::Organization do
     it { should respond_to :users }
   end
 
-
 end

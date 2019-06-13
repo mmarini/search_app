@@ -58,9 +58,5 @@ module Database
 
       index
     end
-
-    def format_field_name(name)
-
-    end
   end
 end

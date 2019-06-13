@@ -20,6 +20,5 @@ describe Helper::StringHelper do
     it 'does nothing if nil passed in' do
       expect( subject.underscore(nil) ).to be_nil
     end
-
   end
 end

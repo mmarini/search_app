@@ -32,7 +32,6 @@ module Importer
           objects << obj
           obj_string = ''
         end
-
       end
 
       objects

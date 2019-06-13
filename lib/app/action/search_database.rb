@@ -11,7 +11,6 @@ module App
 
       def initialize(cli)
         @cli = cli
-        # @pager = TTY::Pager.new
         @pager = TTY::Pager::BasicPager.new
         @pastel = Pastel.new
       end
