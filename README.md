@@ -6,6 +6,8 @@ Pre-requisites:
 - Solution coded against ruby 2.6.3
 - Please run a `bundle install` from the `search_app` directory to install any required libraries
 
+The code was written on macOS, and the `./bin/search.rb` file should have the executable flag set 
+
 From the search_app directory, run `bundle exec ./bin/search.rb`
 
 You will be presented with a menu that will prompt you for the following:
@@ -199,9 +201,28 @@ so we can perform actions on the objects as they are created
 A view will take in the object and format it for display. The format is a an array of arrays that can be taken in by the
 tty-table gem
 
+An assumption here is that each model will have a view with the exact same name. So a Model::Organization will have a
+corresponding View::Organization
+
 ### Helpers
 Code that helps with items like validation, string formatting and input formatting goes here
 
 ### App
 The app directory contains the code for the UI menus and prompting. Each action (search, list fields) has their own 
 action class
+
+## Assumptions and Trade-offs
+I tried to keep a consistency between the models, views and table names through convention. However I don't think
+I was successful in achieving that since the associations in particular needed me to specify the table names in 
+the model
+
+The importer will scan through the input file line by line to build up and process each JSON representation of the
+object as it goes along. Given the size of the input files at present, this could probably have been done easier
+by loading the entire file into memory and using a standard JSON parser to parse. However the specifications did
+make mention of larger datasets (eg 10000+ Users), so this way should hopefully help with larger files
+
+The actual UI relies heavily on a bunch of `tty-*` gems for output. I wasn't sure how to test these without 
+a lot of mocking, which would have negated a lot of the purpose, so this was left
+
+The paging of results could be better. I tried to use the standard `tty-pager`, but it would occasionally throw
+errors if exiting early or scrolling up
