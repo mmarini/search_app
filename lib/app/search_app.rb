@@ -1,5 +1,7 @@
 require 'highline'
 
+require 'tty-spinner'
+
 module App
   class SearchApp
 
@@ -23,17 +25,16 @@ module App
     private
 
     def initialize_database
-      @cli.say 'Loading Organizations...'
-      table = load_data(ORGANIZATION_DATA, Models::Organization)
-      @cli.say "Loaded #{table.count} Organizations"
+      load_table(ORGANIZATION_DATA, Models::Organization)
+      load_table(TICKET_DATA, Models::Ticket)
+      load_table(USER_DATA, Models::User)
+    end
 
-      @cli.say 'Loading Tickets...'
-      table = load_data(TICKET_DATA, Models::Ticket)
-      @cli.say "Loaded #{table.count} Tickets"
-
-      @cli.say 'Loading Users...'
-      table = load_data(USER_DATA, Models::User)
-      @cli.say "Loaded #{table.count} Users"
+    def load_table(data_path, klass)
+      name = klass.name.split('::').last
+      spinner = TTY::Spinner.new("[:spinner] Loading #{name}")
+      table = load_data(data_path, klass)
+      spinner.success("(Loaded #{table.count} records)")
     end
 
     def load_data(file_path, klass)

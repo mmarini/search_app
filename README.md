@@ -54,8 +54,12 @@ Option 1 (Search Zendesk) will prompt you for more information:
     Returned 1 entries of type Organization
 
 The options for selecting the type (Organization, Ticket, User) uses the arrow keys to select
+
 The options for selecting the field to search against also uses the arrow keys, but also enables you to filter that list
 by typing
+
+The search term and the searched item will be highlighted to make it a bit easier to see what you searched on in the 
+results 
 
 Option 2 (List Searchable Fields) will display a list of searchable fields:
 
@@ -119,8 +123,7 @@ Option 2 (List Searchable Fields) will display a list of searchable fields:
     
     --------------------------
 
-The results for the search and listing the search fields will scroll similar to the `less` command. Use the arrow keys 
-to scroll up and down, a space to scroll down a page, or press `q` to quit the results
+The results for the search and listing the search fields will scroll
 
 ## Tests
 Tests were written with RSpec and are located in the `spec` directory . Please run `bundle exec rspec` to execute

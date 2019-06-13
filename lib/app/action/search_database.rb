@@ -11,7 +11,8 @@ module App
 
       def initialize(cli)
         @cli = cli
-        @pager = TTY::Pager.new
+        # @pager = TTY::Pager.new
+        @pager = TTY::Pager::BasicPager.new
         @pastel = Pastel.new
       end
 
@@ -57,15 +58,45 @@ module App
           @cli.say "No #{table_name} found with #{search_term} of value #{search_value}"
         else
           output = results.map do |result|
+            @found_search_term = false
             view_class = Object.const_get("Views::#{table_name}")
             table = TTY::Table.new header: [@pastel.bold('Field Name'), @pastel.bold('Value')],
                                    rows: view_class.format(result)
-            table.render(:basic, multiline: true, resize: true)
+
+            table.render(:basic, multiline: true, column_widths: [20, 60]) do |renderer|
+              renderer.filter = filter_search_result(search_term, search_value.to_s)
+            end
           end
 
           output << @pastel.cyan("Returned #{results.count} entries of type #{table_name}")
 
           @pager.page(output.join("\n-------------------------------------------------------\n"))
+        end
+      end
+
+      def filter_search_result(search_term, search_value)
+        Proc.new do |value, row_index, col_index|
+          if row_index > 0 # Row 0 is header row
+            if col_index == 0 # The search field
+              if value.strip == search_term
+                @found_search_term = true
+                @pastel.black.on_green(value)
+              else
+                value
+              end
+            else #col_index == 1 - The search
+              if @found_search_term
+                @found_search_term = false
+                split_vals = value.split("\n")
+                return_values = split_vals.map { |val| val.strip == search_value ? @pastel.black.on_green(val) : val }
+                return_values.join("\n")
+              else
+                value
+              end
+            end
+          else
+            value
+          end
         end
       end
     end
