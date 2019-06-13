@@ -22,6 +22,10 @@ describe Helper::InputHelper do
       expect( subject.format_for_searching('false') ).to eql false
     end
 
+    it 'returns nil' do
+      expect( subject.format_for_searching('') ).to be_nil
+    end
+
     it 'returns the string' do
       expect( subject.format_for_searching('123truefalse') ).to eql '123truefalse'
     end
